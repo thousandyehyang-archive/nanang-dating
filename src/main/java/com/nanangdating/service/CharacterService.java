@@ -1,15 +1,49 @@
 package com.nanangdating.service;
 
+import com.nanangdating.config.ConfigManager;
 import com.nanangdating.model.CharacterModel;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CharacterService {
+    private final List<CharacterModel> characters;
+
+    public CharacterService() {
+        characters = new ArrayList<>();
+
+        // 🟡 Groq AI 사용 캐릭터
+        characters.add(new CharacterModel(
+                "1",
+                "하나낭",
+                "나는 사람한텐 관심 없어. 오로지 개발뿐이라고, 흥",
+                "/images/hana.png",
+                25,
+                "groq",
+                ConfigManager.PROMPT_HANA
+        ));
+
+        // 🔵 Together AI 사용 캐릭터 (하나)
+        characters.add(new CharacterModel(
+                "2",
+                "배나낭",
+                "안녕! 좋은 아침이이야! 너는 어땠어?",
+                "/images/bana.png",
+                30,
+                "together",
+                ConfigManager.PROMPT_BANA
+        ));
+    }
+
     public List<CharacterModel> getAvailableCharacters() {
-        List<CharacterModel> characters = new ArrayList<>();
-        // 예시 캐릭터: 나낭
-        characters.add(new CharacterModel("1", "나낭", "미연시 공략 대상 캐릭터", "/images/nanang.png", 25));
-        // 필요시 추가 캐릭터를 넣을 수 있음
         return characters;
+    }
+
+    public CharacterModel getCharacterById(String characterId) {
+        Optional<CharacterModel> character = characters.stream()
+                .filter(c -> c.getId().equals(characterId))
+                .findFirst();
+        return character.orElse(null);
     }
 }

@@ -4,48 +4,46 @@ public class CharacterModel {
     private String id;
     private String name;
     private String description;
-    private String imagePath;
-    private int affinity; // 초기 호감도
+    private String imageUrl;
+    private int initialAffinity;
+    private String aiType; // "groq" 또는 "together"
+    private String aiPrompt; // 캐릭터별 프롬프팅 설정
 
-    public CharacterModel() {}
-
-    public CharacterModel(String id, String name, String description, String imagePath, int affinity) {
+    public CharacterModel(String id, String name, String description, String imageUrl, int initialAffinity, String aiType, String aiPrompt) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.imagePath = imagePath;
-        this.affinity = affinity;
+        this.imageUrl = imageUrl;
+        this.initialAffinity = initialAffinity;
+        this.aiType = aiType;
+        this.aiPrompt = aiPrompt;
     }
 
-    // Getter & Setter 메서드
     public String getId() {
         return id;
     }
-    public void setId(String id) {
-        this.id = id;
-    }
+
     public String getName() {
         return name;
     }
-    public void setName(String name) {
-        this.name = name;
-    }
+
     public String getDescription() {
         return description;
     }
-    public void setDescription(String description) {
-        this.description = description;
+
+    public String getImageUrl() {
+        return imageUrl;
     }
-    public String getImagePath() {
-        return imagePath;
+
+    public int getInitialAffinity() {
+        return initialAffinity;
     }
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+
+    public String getAiType() {
+        return aiType;
     }
-    public int getAffinity() {
-        return affinity;
-    }
-    public void setAffinity(int affinity) {
-        this.affinity = affinity;
+
+    public String getAiPrompt() {
+        return aiPrompt;
     }
 }
