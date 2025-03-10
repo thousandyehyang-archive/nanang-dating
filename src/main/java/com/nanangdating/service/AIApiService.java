@@ -2,111 +2,98 @@ package com.nanangdating.service;
 
 import com.nanangdating.util.ApiClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 public class AIApiService {
-    // 환경변수를 통해 API 키를 불러옵니다.
-    private final String togetherAiKey = System.getenv("TOGETHER_AI_KEY");
-    private final String groqKey = System.getenv("GROQ_API_KEY");
+    private static final String TOGETHER_AI_KEY = System.getenv("TOGETHER_AI_KEY");
+    private static final String GROQ_API_KEY = System.getenv("GROQ_API_KEY");
 
-    private final String togetherAiModel = "Llama 3.3 70B Instruct Turbo Free";
-    private final String groqAiModel = "llama-3.3-70b-versatile";
+    private static final String TOGETHER_AI_MODEL = System.getenv("TOGETHER_AI_MODEL");
+    private static final String GROQ_AI_MODEL = System.getenv("GROQ_AI_MODEL");
 
-    // 실제 API 엔드포인트 URL
-    private final String togetherAiEndpoint = "https://api.together.ai/v1/generate";
-    private final String groqAiEndpoint = "https://api.groq.com/openai/v1/chat/completions";
+    private static final String TOGETHER_AI_ENDPOINT = System.getenv("TOGETHER_AI_ENDPOINT");
+    private static final String GROQ_AI_ENDPOINT = System.getenv("GROQ_AI_ENDPOINT");
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private static final String PROMPT_PREFIX = System.getenv("GROQ_AI_PROMPT");
 
-    // 사용자 입력 앞에 프롬프트를 추가하는 메서드
-    private String addCustomPrompt(String userInput) {
-        // 원하는 스타일에 맞게 프롬프트를 수정합니다.
-        String promptPrefix = "당신은 진짜 여고생처럼 귀엽고 자연스러운 말투로 답변해줘. ";
-        return promptPrefix + userInput;
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    /**
+     * 프롬프트에 사용자 입력을 추가하여 AI 모델이 원하는 스타일로 응답하도록 유도하는 메서드.
+     */
+    private String formatPrompt(String userInput) {
+        return String.format("%s %s", PROMPT_PREFIX, userInput);
     }
 
-    public String getTogetherAiResponse(String input) {
-        // 프롬프트 커스터마이징 적용
-        String finalInput = addCustomPrompt(input);
+    /**
+     * AI 모델에게 요청을 보내고 응답을 받는 공통 메서드.
+     */
+    private String sendRequestToAI(String apiKey, String endpoint, String model, String userInput) {
+        String formattedInput = formatPrompt(userInput);
 
-        if ("안녕?".equals(input.trim())) {
-            return "안녕하세요! 저는 Together AI입니다.";
-        }
-        String payload = "{\"model\":\"" + togetherAiModel + "\", \"prompt\":\"" + finalInput + "\"}";
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "Bearer " + togetherAiKey);
-        headers.put("Content-Type", "application/json");
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("model", model);
 
-        String response = ApiClient.sendPostRequest(togetherAiEndpoint, payload, headers);
-        try {
-            Map<String, Object> map = mapper.readValue(response, Map.class);
-            if (map.containsKey("error")) {
-                System.err.println("together AI error: " + map.get("error"));
-                return "AI 응답을 받아오지 못했습니다.";
-            }
-            Object reply = map.get("reply");
-            return reply != null ? reply.toString() : "AI 응답 없음";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "응답 파싱 중 오류 발생";
-        }
-    }
-
-    public String getGroqAiResponse(String input) {
-        // 프롬프트 커스터마이징 적용
-        String finalInput = addCustomPrompt(input);
-
-        if ("안녕?".equals(input.trim())) {
-            return "안녕하세요! 저는 Groq AI입니다.";
-        }
-        // Groq API는 messages 배열 구조를 사용합니다.
-        Map<String, Object> payloadMap = new HashMap<>();
-        payloadMap.put("model", groqAiModel);
         List<Map<String, String>> messages = new ArrayList<>();
         Map<String, String> message = new HashMap<>();
         message.put("role", "user");
-        message.put("content", finalInput);
+        message.put("content", formattedInput);
         messages.add(message);
-        payloadMap.put("messages", messages);
 
-        String payload;
+        payload.put("messages", messages);
+
+        String jsonPayload;
         try {
-            payload = mapper.writeValueAsString(payloadMap);
-        } catch(Exception e) {
+            jsonPayload = mapper.writeValueAsString(payload);
+        } catch (Exception e) {
             e.printStackTrace();
             return "Payload 생성 오류";
         }
 
         Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "Bearer " + groqKey);
+        headers.put("Authorization", "Bearer " + apiKey);
         headers.put("Content-Type", "application/json");
 
-        System.out.println("Groq payload: " + payload);
-        String response = ApiClient.sendPostRequest(groqAiEndpoint, payload, headers);
-        System.out.println("Groq raw response: " + response);
+        System.out.println("AI 요청 payload: " + jsonPayload);
+
+        String response = ApiClient.sendPostRequest(endpoint, jsonPayload, headers);
+        System.out.println("AI 응답: " + response);
+
+        return extractAIResponse(response);
+    }
+
+    /**
+     * Groq API를 호출하는 메서드.
+     */
+    public String getGroqAiResponse(String userInput) {
+        return sendRequestToAI(GROQ_API_KEY, GROQ_AI_ENDPOINT, GROQ_AI_MODEL, userInput);
+    }
+
+    /**
+     * Together AI API를 호출하는 메서드.
+     */
+    public String getTogetherAiResponse(String userInput) {
+        return sendRequestToAI(TOGETHER_AI_KEY, TOGETHER_AI_ENDPOINT, TOGETHER_AI_MODEL, userInput);
+    }
+
+    /**
+     * AI 응답 JSON에서 원하는 메시지를 추출하는 메서드.
+     */
+    private String extractAIResponse(String response) {
         try {
-            Map<String, Object> map = mapper.readValue(response, Map.class);
-            if (map.containsKey("error")) {
-                System.err.println("groq AI error: " + map.get("error"));
+            Map<String, Object> responseMap = mapper.readValue(response, Map.class);
+            if (responseMap.containsKey("error")) {
+                System.err.println("AI 응답 오류: " + responseMap.get("error"));
                 return "AI 응답을 받아오지 못했습니다.";
             }
-            Object choicesObj = map.get("choices");
-            if (choicesObj instanceof List) {
-                List<?> choices = (List<?>) choicesObj;
-                if (!choices.isEmpty()) {
-                    Object firstChoice = choices.get(0);
-                    if (firstChoice instanceof Map) {
-                        Map<?, ?> choiceMap = (Map<?, ?>) firstChoice;
-                        Object messageObj = choiceMap.get("message");
-                        if (messageObj instanceof Map) {
-                            Map<?, ?> messageMap = (Map<?, ?>) messageObj;
-                            Object content = messageMap.get("content");
-                            return content != null ? content.toString() : "AI 응답 없음";
-                        }
-                    }
+
+            List<?> choices = (List<?>) responseMap.get("choices");
+            if (choices != null && !choices.isEmpty()) {
+                Map<?, ?> choice = (Map<?, ?>) choices.get(0);
+                Map<?, ?> message = (Map<?, ?>) choice.get("message");
+                if (message != null) {
+                    return (String) message.get("content");
                 }
             }
             return "AI 응답 없음";
