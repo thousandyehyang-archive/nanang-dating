@@ -21,6 +21,6 @@ public class CharacterSelectionServlet extends HttpServlet {
         // 캐릭터 목록을 서비스에서 가져와 요청 속성에 추가
         List<CharacterModel> characters = characterService.getAvailableCharacters();
         request.setAttribute("characters", characters);
-        request.getRequestDispatcher("/pages/characterSelection.html").forward(request, response);
+        request.getRequestDispatcher("/pages/characterSelection.jsp").forward(request, response);
     }
 }
