@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 파티클 배경 초기화
     initParticles();
 
-    // 음악 버튼 이벤트
-    setupMusicToggle();
+    // 오디오 시스템 초기화
+    initAudio();
 
     // 캐릭터 이벤트 리스너 설정
     setupCharacterEvents();
@@ -79,40 +79,33 @@ function initParticles() {
     });
 }
 
-// 음악 버튼 설정 - 오디오 태그 사용 방식으로 변경
-function setupMusicToggle() {
-    const bgMusic = document.getElementById('bgMusic');
+
+// 오디오 관련 변수들
+let bgMusic, hoverSound, clickSound;
+let isMusicPlaying = false;
+
+// 오디오 시스템 초기화
+function initAudio() {
+    // 배경 음악 설정
+    bgMusic = new Audio(getContextPath() + '/audio/background.mp3');
+    bgMusic.loop = true;
     bgMusic.volume = 0.5;
 
-    // 디버깅을 위한 이벤트 리스너
-    bgMusic.addEventListener('canplaythrough', () => {
-        console.log('🎵 오디오 로드 완료, 재생 가능');
-    });
 
-    bgMusic.addEventListener('error', (e) => {
-        console.error('🔴 오디오 로드 실패:', e);
-    });
-
-    // 사용자 상호작용 시 음악 재생 시작 (브라우저 정책 우회)
-    document.addEventListener('click', function() {
-        bgMusic.play().catch(error => console.log("🔴 음악 재생 실패:", error));
-    }, { once: true });
-
-    // 음악 토글 버튼 설정
-    const musicToggle = document.getElementById('musicToggle');
-    const musicIcon = document.getElementById('musicIcon');
+    // 음악 토글 버튼 이벤트 설정
+    const musicToggle = document.getElementById('music-toggle');
 
     musicToggle.addEventListener('click', function() {
-        if (bgMusic.paused) {
-            bgMusic.play();
-            musicIcon.className = 'fas fa-volume-up';
-        } else {
+        if (isMusicPlaying) {
             bgMusic.pause();
-            musicIcon.className = 'fas fa-volume-mute';
+            musicToggle.innerHTML = '<i class="fas fa-music"></i>';
+        } else {
+            bgMusic.play().catch(e => console.log("Audio play failed:", e));
+            musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
         }
+        isMusicPlaying = !isMusicPlaying;
     });
 }
-
 
 // 캐릭터 이벤트 설정
 function setupCharacterEvents() {
@@ -267,4 +260,10 @@ function typeText(text, element, speed = 50) {
     }
 
     typing();
+}
+
+// 컨텍스트 경로 가져오기 함수
+function getContextPath() {
+    const baseUrl = window.location.pathname;
+    return baseUrl.substring(0, baseUrl.indexOf('/', 1));
 }

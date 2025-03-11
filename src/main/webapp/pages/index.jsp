@@ -17,13 +17,6 @@
 <body>
 <div id="particles-js" class="particles"></div>
 
-<!-- 오디오 태그 추가 (숨김 처리) -->
-<audio id="bgMusic" loop preload="auto" style="display:none;">
-    <source src="<%= request.getContextPath() %>/audio/background.mp3" type="audio/mp3">
-    <!-- 브라우저가 오디오 태그를 지원하지 않는 경우 대체 텍스트 -->
-    브라우저가 오디오 태그를 지원하지 않습니다.
-</audio>
-
 <div class="container main-container my-5">
     <div class="row">
         <div class="col-lg-6 d-flex flex-column justify-content-center">
@@ -68,8 +61,9 @@
     </div>
 </div>
 
-<button class="music-toggle" id="musicToggle">
-    <i class="fas fa-volume-up" id="musicIcon"></i>
+<!-- 음악 토글 버튼 -->
+<button class="music-toggle" id="music-toggle">
+    <i class="fas fa-music"></i>
 </button>
 
 <!-- Define contextPath for JavaScript -->

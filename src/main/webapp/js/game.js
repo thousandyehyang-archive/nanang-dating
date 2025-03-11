@@ -1,103 +1,132 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // 대화창 타이핑 효과
-    const characterDialog = document.getElementById('characterDialog');
-    if (characterDialog && characterDialog.textContent.trim() !== '') {
-        const originalText = characterDialog.textContent;
-        characterDialog.textContent = '';
+document.addEventListener('DOMContentLoaded', function () {
+    const state = {
+        bgMusic: null,
+        isMusicPlaying: false,
+    };
 
-        let i = 0;
-        function typeWriter() {
-            if (i < originalText.length) {
-                characterDialog.textContent += originalText.charAt(i);
-                i++;
-                setTimeout(typeWriter, 30);
-            }
+    initAudio();
+    initEventListeners(state);
+    adjustCharacterImageSize();
+    window.addEventListener('resize', adjustCharacterImageSize);
+});
+
+/**
+ * 이벤트 리스너 초기화
+ */
+function initEventListeners(state) {
+    applyTypingEffect('characterDialog');
+
+    initFormSubmission();
+
+    initCharacterAnimation();
+}
+
+/**
+ * 대화창 타이핑 효과 적용
+ */
+function applyTypingEffect(elementId) {
+    const element = document.getElementById(elementId);
+    if (!element || element.textContent.trim() === '') return;
+
+    const originalText = element.textContent;
+    element.textContent = '';
+    let i = 0;
+
+    function typeWriter() {
+        if (i < originalText.length) {
+            element.textContent += originalText.charAt(i);
+            i++;
+            setTimeout(typeWriter, 30);
         }
-        typeWriter();
     }
+    typeWriter();
+}
 
-    // 폼 제출 이벤트
+/**
+ * 게임 폼 제출 이벤트 핸들링
+ */
+function initFormSubmission() {
     const gameForm = document.getElementById("gameForm");
     const userInput = document.getElementById("userInput");
 
-    if (gameForm && userInput) {
-        userInput.addEventListener("keydown", function (event) {
-            if (event.key === "Enter" && !event.shiftKey) {
-                event.preventDefault(); // 기본 Enter 줄바꿈 방지
+    if (!gameForm || !userInput) return;
 
-                // 입력값이 비어있지 않은 경우에만 폼 제출
-                if (userInput.value.trim() !== "") {
-                    gameForm.submit(); // 폼을 명확히 제출
-                }
-            }
-        });
-
-        // 폼 제출 시 버튼 비활성화 (연속 제출 방지)
-        gameForm.addEventListener("submit", function (event) {
-            const submitButton = gameForm.querySelector(".send-button");
-            if (submitButton) {
-                submitButton.disabled = true;
-                submitButton.innerHTML = "대답을 기다리는 중...";
-            }
-        });
-    }
-
-    // 캐릭터 이미지 애니메이션
-    const characterImage = document.querySelector('.character-image');
-    if (characterImage) {
-        characterImage.classList.add('animate__fadeIn');
-        setInterval(() => {
-            const animations = ['animate__pulse', 'animate__headShake', 'animate__tada'];
-            animations.forEach(anim => {
-                characterImage.classList.remove(anim);
-            });
-            const randomAnim = animations[Math.floor(Math.random() * animations.length)];
-            characterImage.classList.add(randomAnim);
-            setTimeout(() => {
-                characterImage.classList.remove(randomAnim);
-            }, 1000);
-        }, 5000);
-    }
-
-    // 음악 토글 기능
-    const musicToggle = document.getElementById('musicToggle');
-    if (musicToggle) {
-        const bgMusic = document.createElement('audio');
-        bgMusic.id = 'bgMusic';
-        bgMusic.loop = true;
-        bgMusic.volume = 0.3;
-        bgMusic.src = 'audio/background-music.mp3';
-        document.body.appendChild(bgMusic);
-
-        let isMusicPlaying = false;
-        musicToggle.addEventListener('click', function() {
-            if (isMusicPlaying) {
-                bgMusic.pause();
-                musicToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
-            } else {
-                bgMusic.play().catch(error => {
-                    console.log('음악 재생 실패:', error);
-                });
-                musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
-            }
-            isMusicPlaying = !isMusicPlaying;
-        });
-    }
-
-    // 반응형 이벤트
-    function adjustUI() {
-        const windowHeight = window.innerHeight;
-        if (windowHeight < 600) {
-            if (characterImage) {
-                characterImage.style.maxHeight = '50vh';
-            }
-        } else {
-            if (characterImage) {
-                characterImage.style.maxHeight = '';
+    userInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            if (userInput.value.trim() !== "") {
+                gameForm.submit();
             }
         }
-    }
+    });
 
-    adjustUI();
-    window.addEventListener('resize', adjustUI);
-});
+    gameForm.addEventListener("submit", function () {
+        const submitButton = gameForm.querySelector(".send-button");
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.innerHTML = "대답을 기다리는 중...";
+        }
+    });
+}
+
+/**
+ * 캐릭터 이미지 애니메이션 적용
+ */
+function initCharacterAnimation() {
+    const characterImage = document.querySelector('.character-image');
+    if (!characterImage) return;
+
+    characterImage.classList.add('animate__fadeIn');
+
+    setInterval(() => {
+        const animations = ['animate__pulse', 'animate__headShake', 'animate__tada'];
+        const randomAnim = animations[Math.floor(Math.random() * animations.length)];
+
+        characterImage.classList.remove(...animations);
+        characterImage.classList.add(randomAnim);
+
+        setTimeout(() => characterImage.classList.remove(randomAnim), 1000);
+    }, 5000);
+}
+
+// 오디오 관련 변수들
+let bgMusic, hoverSound, clickSound;
+let isMusicPlaying = false;
+
+function initAudio() {
+    // 배경 음악 설정
+    bgMusic = new Audio(getContextPath() + '/audio/background.mp3');
+    bgMusic.loop = true;
+    bgMusic.volume = 0.5;
+
+
+    // 음악 토글 버튼 이벤트 설정
+    const musicToggle = document.getElementById('music-toggle');
+
+    musicToggle.addEventListener('click', function() {
+        if (isMusicPlaying) {
+            bgMusic.pause();
+            musicToggle.innerHTML = '<i class="fas fa-music"></i>';
+        } else {
+            bgMusic.play().catch(e => console.log("Audio play failed:", e));
+            musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+        }
+        isMusicPlaying = !isMusicPlaying;
+    });
+}
+
+/**
+ * 반응형 캐릭터 이미지 크기 조정
+ */
+function adjustCharacterImageSize() {
+    const characterImage = document.querySelector('.character-image');
+    if (!characterImage) return;
+
+    characterImage.style.maxHeight = window.innerHeight < 600 ? '50vh' : '';
+}
+
+// 컨텍스트 경로 가져오기 함수
+function getContextPath() {
+    const baseUrl = window.location.pathname;
+    return baseUrl.substring(0, baseUrl.indexOf('/', 1));
+}

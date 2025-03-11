@@ -144,9 +144,29 @@ body:before {
 }
 
 /* 📜 캐릭터 카드 스타일 */
+.character-img-container {
+    width: 100%;
+    height: 250px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.character-img {
+    width: auto; /* Changed from 100% to auto */
+    height: 100%;
+    object-fit: contain; /* Changed from cover to contain */
+    transition: all 0.5s ease;
+    max-width: 100%; /* Added to ensure image doesn't overflow container width */
+}
+
+/* Make sure the card has enough height for the image */
 .character-card {
     width: 500px;
-    height: 480px;
+    height: auto; /* Changed from fixed 480px to auto */
+    min-height: 480px; /* Added minimum height */
     background-color: rgba(34, 34, 34, 0.9);
     border: 2px solid var(--accent-color);
     border-radius: 15px;
@@ -165,6 +185,29 @@ body:before {
     justify-content: space-between;
 }
 
+/* Update media queries to maintain aspect ratio for smaller screens */
+@media (max-width: 992px) {
+    .character-card {
+        width: 280px;
+        min-height: 450px;
+    }
+
+    .character-img-container {
+        height: 220px;
+    }
+}
+
+@media (max-width: 768px) {
+    .character-card {
+        width: 250px;
+        min-height: 420px;
+    }
+
+    .character-img-container {
+        height: 200px;
+    }
+}
+
 .character-card:nth-child(1) {
     animation-delay: 0.5s;
 }
@@ -181,23 +224,6 @@ body:before {
     transform: translateY(-10px);
     box-shadow: 0 15px 30px rgba(255, 105, 180, 0.4);
     border-color: var(--primary-color);
-}
-
-.character-img-container {
-    width: 100%;
-    height: 250px;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.character-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: all 0.5s ease;
 }
 
 .character-card:hover .character-img {

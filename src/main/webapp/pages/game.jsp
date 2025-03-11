@@ -64,7 +64,7 @@
 </div>
 
 <!-- 음악 토글 버튼 -->
-<button class="music-toggle" id="musicToggle">
+<button class="music-toggle" id="music-toggle">
     <i class="fas fa-music"></i>
 </button>
 

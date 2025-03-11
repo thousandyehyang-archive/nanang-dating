@@ -184,7 +184,8 @@ body:before {
     box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
 }
 
-/* 음악 토글 버튼 */
+
+/* 🎶 음악 토글 버튼 */
 .music-toggle {
     position: fixed;
     bottom: 20px;
