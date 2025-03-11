@@ -17,7 +17,7 @@ public class CharacterService {
         characters.add(new CharacterModel(
                 "1",
                 "하나낭",
-                "나는 사람한텐 관심 없어. 오로지 개발뿐이라고, 흥",
+                "나는 사람한텐 관심 없어. 특히 너말이야.",
                 "hana.png",
                 25,
                 "groq",

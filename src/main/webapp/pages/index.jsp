@@ -63,7 +63,7 @@
 
 <!-- 음악 토글 버튼 -->
 <button class="music-toggle" id="music-toggle">
-    <i class="fas fa-music"></i>
+    <i class="fas fa-volume-mute"></i>
 </button>
 
 <!-- Define contextPath for JavaScript -->

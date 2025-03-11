@@ -79,18 +79,44 @@ function initParticles() {
     });
 }
 
+window.addEventListener("pageshow", function(event) {
+    if (event.persisted) { // 뒤로 가기로 돌아왔을 때
+        console.log("🔄 뒤로 가기로 돌아왔습니다.");
+        restoreAudioState(); // 음악 상태 복원
+    }
+});
 
-// 오디오 관련 변수들
-let bgMusic, hoverSound, clickSound;
-let isMusicPlaying = false;
+function restoreAudioState() {
+    const storedMusicState = localStorage.getItem('bgmPlaying') === 'true';
+    const storedTime = parseFloat(localStorage.getItem('bgmTime')) || 0;
+
+    if (bgMusic) {
+        bgMusic.currentTime = storedTime;
+        if (storedMusicState) {
+            bgMusic.play().catch(e => console.log("Audio play failed:", e));
+        }
+    }
+}
+
 
 // 오디오 시스템 초기화
+let bgMusic, isMusicPlaying = false;
+
 function initAudio() {
+    // LocalStorage에서 음악 상태 확인
+    const storedMusicState = localStorage.getItem('bgmPlaying');
+    const storedTime = parseFloat(localStorage.getItem('bgmTime')) || 0;
+
     // 배경 음악 설정
     bgMusic = new Audio(getContextPath() + '/audio/background.mp3');
     bgMusic.loop = true;
     bgMusic.volume = 0.5;
+    bgMusic.currentTime = storedTime;
 
+    if (storedMusicState === 'true') {
+        bgMusic.play().catch(e => console.log("Audio play failed:", e));
+        isMusicPlaying = true;
+    }
 
     // 음악 토글 버튼 이벤트 설정
     const musicToggle = document.getElementById('music-toggle');
@@ -98,14 +124,25 @@ function initAudio() {
     musicToggle.addEventListener('click', function() {
         if (isMusicPlaying) {
             bgMusic.pause();
-            musicToggle.innerHTML = '<i class="fas fa-music"></i>';
+            musicToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
         } else {
             bgMusic.play().catch(e => console.log("Audio play failed:", e));
             musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
         }
         isMusicPlaying = !isMusicPlaying;
+
+        // 음악 상태 저장
+        localStorage.setItem('bgmPlaying', isMusicPlaying.toString());
     });
+
+    // 현재 음악 재생 시간을 저장 (1초마다)
+    setInterval(() => {
+        if (!bgMusic.paused) {
+            localStorage.setItem('bgmTime', bgMusic.currentTime);
+        }
+    }, 1000);
 }
+
 
 // 캐릭터 이벤트 설정
 function setupCharacterEvents() {
