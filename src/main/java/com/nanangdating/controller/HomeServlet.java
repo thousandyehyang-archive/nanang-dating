@@ -12,7 +12,7 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // 메인 홈 페이지(index.html)로 포워딩
-        request.getRequestDispatcher("/pages/index.html").forward(request, response);
+        // 메인 홈 페이지(index.jsp)로 포워딩
+        request.getRequestDispatcher("/pages/index.jsp").forward(request, response);
     }
 }
