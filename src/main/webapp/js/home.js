@@ -218,12 +218,22 @@ function setupChoiceEvents(characterId) {
     const choiceNo = document.getElementById('choiceNo');
     const dialogBox = document.getElementById('dialogBox');
     const dialogText = document.getElementById('dialogText');
+    const dialogChoices = document.getElementById('dialogChoices');
+    const dialogNext = document.querySelector('.dialog-next');
+
+    // 선택지를 초기에 숨김
+    dialogChoices.style.display = 'none';
+
+    // 대화창이 열릴 때 3초 후 선택지 표시
+    setTimeout(() => {
+        dialogChoices.style.display = 'flex';
+    }, 4000);
 
     // 긍정적 선택지
     choiceYes.onclick = function() {
         let response = "";
 
-        switch(characterId) {
+        switch (characterId) {
             case 'character1':
                 response = "고마워... 뭐, 큰 도움이 될지는 모르겠지만! 그럼 내일 방과 후에 학생회실로 와줘. 기다릴게...";
                 break;
@@ -237,23 +247,14 @@ function setupChoiceEvents(characterId) {
         typeText(response, dialogText);
 
         // 선택지 숨기기
-        document.getElementById('dialogChoices').style.display = 'none';
-
-        // 4초 후 대화창 닫기
-        setTimeout(function() {
-            dialogBox.classList.remove('active');
-            // 1초 후 선택지 다시 표시 (다음 대화를 위해)
-            setTimeout(function() {
-                document.getElementById('dialogChoices').style.display = 'flex';
-            }, 1000);
-        }, 40000);
+        dialogChoices.style.display = 'none';
     };
 
     // 부정적 선택지
     choiceNo.onclick = function() {
         let response = "";
 
-        switch(characterId) {
+        switch (characterId) {
             case 'character1':
                 response = "...어차피 상관 없어. 별로 기대한 건 아니니까...";
                 break;
@@ -267,17 +268,17 @@ function setupChoiceEvents(characterId) {
         typeText(response, dialogText);
 
         // 선택지 숨기기
-        document.getElementById('dialogChoices').style.display = 'none';
-
-        // 4초 후 대화창 닫기
-        setTimeout(function() {
-            dialogBox.classList.remove('active');
-            // 1초 후 선택지 다시 표시 (다음 대화를 위해)
-            setTimeout(function() {
-                document.getElementById('dialogChoices').style.display = 'flex';
-            }, 1000);
-        }, 4000);
+        dialogChoices.style.display = 'none';
     };
+
+    // 대화창 닫기 이벤트 (2초 후 선택지 다시 표시)
+    dialogNext.addEventListener('click', function () {
+        dialogBox.classList.remove('active');
+
+        setTimeout(() => {
+            dialogChoices.style.display = 'flex';
+        }, 2000); // 2초 뒤에 선택지 표시
+    });
 }
 
 // 타이핑 효과 함수
