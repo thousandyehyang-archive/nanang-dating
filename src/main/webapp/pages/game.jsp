@@ -18,7 +18,7 @@
 
     if (userInput != null && !userInput.trim().isEmpty()) {
         AIService aiService = AIServiceFactory.getAIService(character);
-        aiResponse = aiService.sendRequest(userInput, character.getAiPrompt()); // ✅ 메서드 수정
+        aiResponse = aiService.sendRequest(userInput, character.getAiPrompt());
     }
 %>
 <!DOCTYPE html>
@@ -27,41 +27,48 @@
     <meta charset="UTF-8">
     <base href="/nanang-dating/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>게임 진행 - <%= character.getName() %></title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title><%= character.getName() %></title>
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/game.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #222222;">
-    <div class="container">
-        <a class="navbar-brand" href="characterSelection">나낭 데이팅</a>
+<!-- 시각적 소설 스타일 화면 -->
+<div class="visual-novel-screen">
+    <!-- 캐릭터 이미지 -->
+    <div class="character-display">
+        <img src="../images/characters/default.png" alt="<%= character.getName() %>" class="character-image animate__animated animate__fadeIn">
     </div>
-</nav>
 
-<div class="container my-5">
-    <h1 class="text-center mb-4" style="color: #FFD700;"><%= character.getName() %>과의 대화</h1>
-    <div class="card" style="background-color: #333333; color: #fff;">
-        <div class="card-body">
-            <div id="conversation">
-                <% if (!aiResponse.isEmpty()) { %>
-                <p><strong><%= character.getName() %>:</strong> <%= aiResponse %></p>
-                <% } %>
-            </div>
-            <form id="gameForm" method="post" action="game">
-                <input type="hidden" name="characterId" value="<%= character.getId() %>">
-                <div class="mb-3">
-                    <label for="userInput" class="form-label">메시지 입력</label>
-                    <textarea class="form-control" id="userInput" name="userInput" rows="3" placeholder="메시지를 입력하세요"></textarea>
-                </div>
-                <button type="submit" class="btn btn-lg" style="background-color: #FFD700; color: #222222;">전송</button>
-            </form>
+    <!-- 대화창 -->
+    <div class="dialog-box animate__animated animate__fadeInUp">
+        <div class="character-name"><%= character.getName() %></div>
+        <div id="characterDialog" class="character-dialog">
+            <% if (!aiResponse.isEmpty()) { %>
+            <%= aiResponse %>
+            <% } else { %>
+            무슨 일이야?
+            <% } %>
         </div>
+    </div>
+
+    <!-- 사용자 입력 -->
+    <div class="user-input-area">
+        <form id="gameForm" method="post" action="game">
+            <input type="hidden" name="characterId" value="<%= character.getId() %>">
+            <textarea class="message-input" id="userInput" name="userInput" placeholder="무슨 말을 할까?"></textarea>
+            <button type="submit" class="send-button animate__animated animate__pulse">말하기</button>
+        </form>
     </div>
 </div>
 
-<!-- Bootstrap Bundle JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- 음악 토글 버튼 -->
+<button class="music-toggle" id="musicToggle">
+    <i class="fas fa-music"></i>
+</button>
+
+<!-- Custom JS -->
+<script src="<%= request.getContextPath() %>/js/game.js"></script>
 </body>
 </html>

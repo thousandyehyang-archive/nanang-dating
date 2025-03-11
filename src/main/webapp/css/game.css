@@ -1,0 +1,248 @@
+@font-face {
+    font-family: 'MaplestoryOTFBold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/MaplestoryOTFBold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root {
+    --primary-color: #FF69B4;
+    --secondary-color: #222222;
+    --accent-color: #FFD700;
+    --text-color: #ffffff;
+}
+
+body {
+    font-family: 'MaplestoryOTFBold', 'Nanum Gothic', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background-color: #111111;
+    color: #fff;
+    background-image: url('https://img.freepik.com/free-vector/vector-damask-seamless-pattern-background-classical-luxury-old-fashioned-damask-ornament-royal-victorian-seamless-texture-wallpapers-textile-wrapping-exquisite-floral-baroque-template_1217-738.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+}
+
+/* 어두운 배경 필터 */
+body:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: -1;
+}
+
+/* 전체 비주얼 노벨 화면 */
+.visual-novel-screen {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 캐릭터 표시 영역 */
+.character-display {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.character-image {
+    height: 80vh;
+    max-height: 80%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.7));
+    transition: all 0.5s ease;
+}
+
+.character-display:hover .character-image {
+    transform: scale(1.02);
+}
+
+/* 🗨️ 대화창 스타일 */
+.dialog-box {
+    position: absolute;
+    bottom: 20%;
+    left: 27.5%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 800px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(34, 34, 34, 0.9);
+    border: 2px solid var(--primary-color);
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 -5px 25px rgba(255, 105, 180, 0.3);
+}
+
+/* 대화창 내부 요소 정렬 */
+.character-name {
+    color: var(--primary-color);
+    display: inline-block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.character-dialog {
+    min-height: 60px;
+    line-height: 1.6;
+    font-size: 18px;
+    max-width: 90%;
+}
+
+/* 반응형 (모바일 최적화) */
+@media (max-width: 768px) {
+    .dialog-box {
+        width: 90%;
+        padding: 12px;
+    }
+
+    .character-dialog {
+        font-size: 16px;
+        max-width: 100%;
+    }
+}
+
+/* 사용자 입력 영역 */
+.user-input-area {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 800px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-input-area form {
+    display: flex;
+    gap: 10px;
+}
+
+.message-input {
+    flex: 1;
+    background-color: rgba(51, 51, 51, 0.8);
+    color: #ffffff;
+    border: 1px solid #555555;
+    border-radius: 8px;
+    font-family: 'MaplestoryOTFBold', sans-serif;
+    font-size: 16px;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+    resize: none;
+    height: 50px;
+}
+
+.message-input:focus {
+    background-color: rgba(58, 58, 58, 0.9);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.25);
+    outline: none;
+}
+
+.send-button {
+    background-color: var(--accent-color);
+    color: #222222;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    font-family: 'MaplestoryOTFBold', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1px;
+    border: none;
+    padding: 0 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    height: 50px;
+}
+
+.send-button:hover {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+}
+
+/* 음악 토글 버튼 */
+.music-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgba(42, 42, 42, 0.8);
+    color: var(--accent-color);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.music-toggle:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .character-image {
+        height: 70vh;
+    }
+
+    .dialog-box {
+        width: 90%;
+        padding: 12px;
+    }
+
+    .character-dialog {
+        font-size: 16px;
+    }
+
+    .user-input-area {
+        width: 90%;
+    }
+
+    .message-input {
+        font-size: 14px;
+    }
+
+    .send-button {
+        font-size: 14px;
+        padding: 0 15px;
+    }
+}
+
+/* 작은 화면에 대한 추가 스타일 */
+@media (max-width: 480px) {
+    .character-image {
+        height: 60vh;
+    }
+}
