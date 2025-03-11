@@ -25,7 +25,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <base href="/nanang-dating/">
+    <base href="<%= request.getContextPath() %>/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= character.getName() %></title>
     <!-- Font Awesome -->

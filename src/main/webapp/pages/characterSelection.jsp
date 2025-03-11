@@ -10,6 +10,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <base href="<%= request.getContextPath() %>/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>도키☆도키☆ 나낭즈</title>
     <!-- Bootstrap CSS -->

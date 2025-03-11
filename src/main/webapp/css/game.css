@@ -77,7 +77,7 @@ body:before {
 .dialog-box {
     position: absolute;
     bottom: 20%;
-    left: 27.5%;
+    left: 22.5%;
     transform: translateX(-50%);
     width: 80%;
     max-width: 800px;
