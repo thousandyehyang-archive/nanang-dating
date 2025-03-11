@@ -40,15 +40,15 @@
         <div class="col-lg-6 text-center">
             <div class="character-container">
                 <div class="character character-1" id="character1">
-                    <img src="<%= request.getContextPath() %>/api/placeholder/200/300" alt="하나낭" class="character-img">
+                    <img src="<%= request.getContextPath() %>/images/hana.png" alt="하나낭" class="character-img">
                     <div class="character-speech-bubble d-none">
                         <p>뭘봐, 너한테 관심 없으니까 꺼져.</p>
                     </div>
                 </div>
                 <div class="character character-2" id="character2">
-                    <img src="<%= request.getContextPath() %>/api/placeholder/200/300" alt="배나낭" class="character-img">
+                    <img src="<%= request.getContextPath() %>/images/bana.png" alt="배나낭" class="character-img">
                     <div class="character-speech-bubble d-none">
-                        <p>반가워❤ 나는 세상에서 최고로 귀여운 나낭이야! 잘부탁한다낭☆</p>
+                        <p>반가워❤ 나는 세상에서 최고로 귀여운 나낭이야! 잘부탁해~><☆</p>
                     </div>
                 </div>
             </div>

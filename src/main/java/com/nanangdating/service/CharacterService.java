@@ -18,7 +18,7 @@ public class CharacterService {
                 "1",
                 "하나낭",
                 "나는 사람한텐 관심 없어. 오로지 개발뿐이라고, 흥",
-                "/images/hana.png",
+                "hana.png",
                 25,
                 "groq",
                 ConfigManager.PROMPT_HANA
@@ -29,7 +29,7 @@ public class CharacterService {
                 "2",
                 "배나낭",
                 "안녕! 좋은 아침이이야! 너는 어땠어?",
-                "/images/bana.png",
+                "bana.png",
                 30,
                 "together",
                 ConfigManager.PROMPT_BANA

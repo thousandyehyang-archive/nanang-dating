@@ -38,7 +38,7 @@
 <div class="visual-novel-screen">
     <!-- 캐릭터 이미지 -->
     <div class="character-display">
-        <img src="../images/characters/default.png" alt="<%= character.getName() %>" class="character-image animate__animated animate__fadeIn">
+        <img src="<%= request.getContextPath() %>/images/<%= character.getImageUrl() %>" class="character-image animate__animated animate__fadeIn" alt="<%= character.getName() %>">
     </div>
 
     <!-- 대화창 -->
